@@ -1,5 +1,6 @@
 const express = require('express');
 const { readFile } = require('./services/fsUtils');
+const { generateId } = require('./services/generateId');
 
 const app = express();
 app.use(express.json());
@@ -32,4 +33,13 @@ app.get('/talker/:id', async (req, res) => {
     return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
   }
   return res.status(200).json(talker);
+});
+
+app.post('/login', (req, res) => {
+  const { email, password } = req.body;
+
+  const token = generateId();
+  if (email && password) {
+    return res.status(200).json({ token });
+  }
 });
