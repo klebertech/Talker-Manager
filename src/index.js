@@ -1,4 +1,5 @@
 const express = require('express');
+const { readFile } = require('./services/fsUtils');
 
 const app = express();
 app.use(express.json());
@@ -11,8 +12,12 @@ app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
-app.get();
-
 app.listen(PORT, () => {
   console.log('Online');
+});
+
+app.get('/talker', async (req, res) => {
+  const talkers = await readFile();
+
+  return res.status(200).json(talkers);
 });
