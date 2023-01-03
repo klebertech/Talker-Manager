@@ -24,7 +24,7 @@ app.use(talkerRouter);
 
 app.post('/login', validateEmail, validatePassword, (req, res) => {
   const { email, password } = req.body;
-
+  
   const token = generateId();
   if (email && password) {
     return res.status(200).json({ token });

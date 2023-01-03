@@ -23,4 +23,5 @@ const writeFile = async (data) => {
     return false;
   }
 };
+
 module.exports = { readFile, writeFile };
