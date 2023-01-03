@@ -1,8 +1,11 @@
 const express = require('express');
-const { readFile } = require('./services/fsUtils');
-const { generateId } = require('./services/generateId');
+const { generateId } = require('./utils/generateId');
+const talkerRouter = require('./routes/talkerRoutes');
+const validateEmail = require('./middlewares/validateEmail');
+const validatePassword = require('./middlewares/validatePassword');
 
 const app = express();
+
 app.use(express.json());
 
 const HTTP_OK_STATUS = 200;
@@ -17,25 +20,9 @@ app.listen(PORT, () => {
   console.log('Online');
 });
 
-app.get('/talker', async (req, res) => {
-  const talkers = await readFile();
+app.use(talkerRouter);
 
-  return res.status(200).json(talkers);
-});
-
-app.get('/talker/:id', async (req, res) => {
-  const { id } = req.params;
-  const talkers = await readFile();
-
-  const talker = talkers.find((t) => t.id === Number(id));
-
-  if (!talker) {
-    return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
-  }
-  return res.status(200).json(talker);
-});
-
-app.post('/login', (req, res) => {
+app.post('/login', validateEmail, validatePassword, (req, res) => {
   const { email, password } = req.body;
 
   const token = generateId();
