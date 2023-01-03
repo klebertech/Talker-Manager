@@ -48,6 +48,23 @@ talkerRouter.post('/talker',
     return res.status(201).json(newTalker);
 });
 
+talkerRouter.put('/talker/:id', 
+  authMiddleware,
+  nameAgeValidation,
+  talkValidation,
+  talkRateValidation,
+  async (req, res) => {
+    const id = Number(req.params.id);
+    // const { name, age, talk } = req.body;
+    const talkers = await readFile();
+    const talker = talkers.find((el) => el.id === id);
+    const index = talkers.indexOf(talker);
+    const talkerUpdated = { id, ...req.body };
+    talkers.splice(index, 1, talkerUpdated);
+    await writeFile(talkers);
+    return res.status(200).json(talkerUpdated);
+});
+
 talkerRouter.use((error, req, res, _next) => {
   res.status(error.status || 500).json({ message: error.message });
 });
