@@ -15,6 +15,14 @@ talkerRouter.get('/talker', async (req, res) => {
   return res.status(200).json(talkers);
 });
 
+talkerRouter.get('/talker/search', authMiddleware, async (req, res) => {
+  const { q } = req.query;
+  const talkers = await readFile();
+  const talkersFinded = talkers.filter((el) => el.name.includes(q));
+
+  return res.status(200).json(talkersFinded);
+});
+
 talkerRouter.get('/talker/:id', async (req, res, next) => {
   const { id } = req.params;
   const talkers = await readFile();
@@ -55,7 +63,6 @@ talkerRouter.put('/talker/:id',
   talkRateValidation,
   async (req, res) => {
     const id = Number(req.params.id);
-    // const { name, age, talk } = req.body;
     const talkers = await readFile();
     const talker = talkers.find((el) => el.id === id);
     const index = talkers.indexOf(talker);
